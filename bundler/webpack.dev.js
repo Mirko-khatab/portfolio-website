@@ -1,7 +1,6 @@
 const path = require('path');
 const { merge } = require('webpack-merge');
 const commonConfiguration = require('./webpack.common.js');
-const ip = require('ip');
 const portFinderSync = require('portfinder-sync');
 
 const infoColor = (_message) => {
@@ -13,26 +12,22 @@ module.exports = merge(
     {
         stats: 'errors-warnings',
         mode: 'development',
-        infrastructureLogging:
-        {
+        infrastructureLogging: {
             level: 'warn',
         },
-        devServer:
-        {
-            host: 'local-ip',
+        devServer: {
+            host: 'localhost', // Change 'local-ip' to 'localhost'
             port: portFinderSync.getPort(1461),
             open: true,
             https: false,
             allowedHosts: 'all',
             hot: false,
             watchFiles: ['src/**', 'static/**'],
-            static:
-            {
+            static: {
                 watch: true,
                 directory: path.join(__dirname, '../static')
             },
-            client:
-            {
+            client: {
                 logging: 'none',
                 overlay: true,
                 progress: false
@@ -40,11 +35,8 @@ module.exports = merge(
             onAfterSetupMiddleware: function (devServer) {
                 const port = devServer.options.port;
                 const https = devServer.options.https ? 's' : '';
-                const localIp = ip.address();
-                const domain1 = `http${https}://${localIp}:${port}`;
-                const domain2 = `http${https}://localhost:${port}`;
-
-                console.log(`Project running at:\n  - ${infoColor(domain1)}\n  - ${infoColor(domain2)}`);
+                const domain1 = `http${https}://localhost:${port}`; // Use 'localhost' here
+                console.log(`Project running at:\n  - ${infoColor(domain1)}`);
             }
         }
     }
